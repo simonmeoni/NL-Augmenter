@@ -1,20 +1,17 @@
 from abc import ABC
 
-import torch
-
-from interfaces.SentenceOperation import SentenceOperation
-from tasks.TaskTypes import TaskType
 from transformers import (
     AutoModelForMaskedLM,
     AutoTokenizer,
     AutoModelForTokenClassification,
 )
+from transformers import pipeline
 from transformers.pipelines.token_classification import (
     TokenClassificationPipeline,
-    AggregationStrategy,
 )
-from transformers import pipeline
-import re
+
+from interfaces.SentenceOperation import SentenceOperation
+from tasks.TaskTypes import TaskType
 
 """
 Base Class for implementing the different input transformations a generation should be robust against.
@@ -39,7 +36,7 @@ class PronounToNounTransformation(SentenceOperation, ABC):
     ):
         super().__init__()
         self.ner = TokenClassificationPipeline(
-            aggregation_strategy=AggregationStrategy.SIMPLE,
+            grouped_entities=True,
             model=AutoModelForTokenClassification.from_pretrained(ner_model),
             tokenizer=AutoTokenizer.from_pretrained(ner_tokenizer, use_fast=True),
         )
@@ -64,4 +61,4 @@ class PronounToNounTransformation(SentenceOperation, ABC):
                 masked_sentence[0:start] + "<mask>" + masked_sentence[end:]
             )
             masked_sentence = self.mask(masked_sentence)[0]["sequence"]
-        return masked_sentence
+        return [masked_sentence]
