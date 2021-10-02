@@ -20,7 +20,7 @@ Base Class for implementing the different input transformations a generation sho
 
 class PronounToNounTransformation(SentenceOperation, ABC):
     tasks = [
-        TaskType.TEXT_CLASSIFICATION,
+         TaskType.TEXT_CLASSIFICATION,
         TaskType.TEXT_TO_TEXT_GENERATION,
         TaskType.QUESTION_ANSWERING,
         TaskType.SENTIMENT_ANALYSIS,
